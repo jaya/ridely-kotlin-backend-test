@@ -16,9 +16,9 @@ class PassengerRequest(
 class RequestDriver(
     @JsonProperty(required = true)
     val passenger: PassengerRequest,
-    @JsonProperty(required = true)
+    @JsonProperty(value = "pickUp", required = true)
     val pickUp: String,
-    @JsonProperty(required = true)
+    @JsonProperty(value = "dropOff", required = true)
     val dropOff: String
 ) {
     fun toRide(driver: Driver) = Ride(

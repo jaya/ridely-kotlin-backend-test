@@ -8,43 +8,33 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import tech.jaya.ridely.repository.DriverRepo
-import tech.jaya.ridely.repository.RideRepo
+import tech.jaya.ridely.service.DriverService
 
 @RestController
 @RequestMapping("/drivers")
 class DriverController(
-    private val driverRepo: DriverRepo,
-    private val rideRepo: RideRepo
+    private val driverService: DriverService
 ) {
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Long): ResponseEntity<DriverResponse> {
-        return driverRepo.findById(id).orElseThrow {
-            DriverNotFound("Drive not found $id")
-        }.let {
-            ResponseEntity.ok(it.toResponse())
-        }
+        return ResponseEntity.ok(driverService.findById(id).toResponse())
     }
 
     @GetMapping("/{id}/get-rides")
     fun getRide(@PathVariable id: Long): AcceptResponse {
-        val ride = rideRepo.findLastRideByDriveId(id).orElseThrow {
-            throw RideNotFoundException("You don't have any Ride")
-        }
+        val ride = driverService.getRide(id)
         return AcceptResponse.fromRide(ride)
     }
 
     @PostMapping
     fun save(@RequestBody driverRequest: DriverCreation): ResponseEntity<DriverResponse> {
-        return driverRepo.save(driverRequest.toDriver()).let {
-            ResponseEntity.ok(it.toResponse())
-        }
+        return ResponseEntity.ok(driverService.save(driverRequest).toResponse())
     }
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long): ResponseEntity<Unit> {
-        return driverRepo.deleteById(id).let {
+        return driverService.delete(id).let {
             ResponseEntity.noContent().build()
         }
     }

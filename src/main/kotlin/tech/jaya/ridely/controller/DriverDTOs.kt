@@ -23,7 +23,7 @@ data class DriverCreation(
 }
 
 data class CarDto(
-    @JsonProperty(required = true)
+    @JsonProperty(value = "licensePlate", required = true)
     val licensePlate: String,
     @JsonProperty(required = true)
     val model: String,
