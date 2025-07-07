@@ -1,5 +1,6 @@
 package tech.jaya.ridely.service
 
+import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Service
 import tech.jaya.ridely.dto.ActionRideRequest
@@ -96,7 +97,7 @@ class RideService(
     }
 
     suspend fun computeRoutesApi(origin: String, destination: String): ComputeRoutesResponse? {
-        val apiKey = "AIzaSyBByp5bEonxBomXlKjN7TQSr9fOyYIIIuw"
+        val apiKey = dotenv().get("API_KEY")
         val fieldMask = "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline"
         val contentType = "application/json"
 
