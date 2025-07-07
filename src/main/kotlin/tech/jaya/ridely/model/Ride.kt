@@ -10,7 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import tech.jaya.ridely.controller.RideInvalidState
+import tech.jaya.ridely.exception.RideInvalidState
 import java.math.BigDecimal
 
 /**
@@ -52,7 +52,15 @@ class Ride(
     @Column(name = "passenger_email", nullable = false)
     var passengerEmail: String? = null,
 
+    @Column(name = "price", nullable = false)
     var price: BigDecimal? = BigDecimal.ZERO,
+
+    @Column(name = "distance", nullable = false)
+    var distance: BigDecimal? = BigDecimal.ZERO,
+
+    @Column(name = "estimated_time", nullable = false)
+    var estimatedTime: BigDecimal? = BigDecimal.ZERO
+
 ) {
     fun request(driver: Driver) {
         if (status == Status.COMPLETED) {

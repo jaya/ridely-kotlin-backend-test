@@ -2,14 +2,21 @@ package tech.jaya.ridely.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import tech.jaya.ridely.repository.DriverRepo
-import tech.jaya.ridely.repository.RideRepo
-import tech.jaya.ridely.service.DriverService
+import tech.jaya.ridely.dto.AcceptResponse
+import tech.jaya.ridely.dto.ActionRideRequest
+import tech.jaya.ridely.dto.CancelResponse
+import tech.jaya.ridely.dto.FinishResponse
+import tech.jaya.ridely.dto.FinishRideRequest
+import tech.jaya.ridely.dto.RefuseResponse
+import tech.jaya.ridely.dto.RequestDriver
+import tech.jaya.ridely.dto.RequestDriverResponse
+import tech.jaya.ridely.dto.RideDetailsResponse
 import tech.jaya.ridely.service.RideService
 
 @RestController

@@ -1,4 +1,4 @@
-package tech.jaya.ridely.controller
+package tech.jaya.ridely.exception
 
 class DriverUnavailable(message: String) : Exception(message)
 

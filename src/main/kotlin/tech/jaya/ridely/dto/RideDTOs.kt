@@ -1,4 +1,4 @@
-package tech.jaya.ridely.controller
+package tech.jaya.ridely.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import tech.jaya.ridely.model.Driver
@@ -13,6 +13,12 @@ class PassengerRequest(
     val email: String
 )
 
+class RideDetailsResponse(
+    val price: BigDecimal,
+    val distance: BigDecimal,
+    val estimatedTime: BigDecimal
+)
+
 class RequestDriver(
     @JsonProperty(required = true)
     val passenger: PassengerRequest,
@@ -21,11 +27,14 @@ class RequestDriver(
     @JsonProperty(value = "dropOff", required = true)
     val dropOff: String
 ) {
-    fun toRide(driver: Driver) = Ride(
+    fun toRide(driver: Driver, rideDetails: RideDetailsResponse) = Ride(
         pickUp = this.pickUp,
         dropOff = this.dropOff,
         passengerName = passenger.name,
         passengerEmail = passenger.email,
+        price = rideDetails.price,
+        distance = rideDetails.distance,
+        estimatedTime = rideDetails.estimatedTime,
         driver = driver
     )
 }
@@ -53,6 +62,9 @@ class RequestDriverResponse private constructor(
     val status: Status,
     val dropOff: String,
     val pickUp: String,
+    val price: BigDecimal,
+    val distance: BigDecimal,
+    val estimatedTime: BigDecimal
 ) {
     data class DriverDto(
         val name: String,
@@ -71,6 +83,9 @@ class RequestDriverResponse private constructor(
             dropOff = ride.dropOff!!,
             pickUp = ride.pickUp!!,
             status = ride.status!!,
+            price = ride.price!!,
+            distance = ride.distance!!,
+            estimatedTime = ride.estimatedTime!!,
             driver = DriverDto(
                 name = ride.driver!!.name,
                 car = DriverDto.CarDto(

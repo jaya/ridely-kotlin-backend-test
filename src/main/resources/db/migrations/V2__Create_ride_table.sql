@@ -10,7 +10,9 @@ CREATE TABLE ride
                         'IN_PROGRESS',
                         'CANCELLED',
                         'REFUSED') NOT NULL DEFAULT 'REQUESTED',
-    price           decimal(10, 2) NULL,
+    price           decimal(10, 2) NOT NULL,
+    distance        decimal(10, 2) NOT NULL,
+    estimated_time  decimal(10, 2) NOT NULL,
     driver_id       int            NULL,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB

@@ -1,9 +1,9 @@
 package tech.jaya.ridely.service
 
 import org.springframework.stereotype.Service
-import tech.jaya.ridely.controller.DriverCreation
-import tech.jaya.ridely.controller.DriverNotFound
-import tech.jaya.ridely.controller.RideNotFoundException
+import tech.jaya.ridely.dto.DriverCreation
+import tech.jaya.ridely.exception.DriverNotFound
+import tech.jaya.ridely.exception.RideNotFoundException
 import tech.jaya.ridely.model.Driver
 import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.repository.DriverRepo

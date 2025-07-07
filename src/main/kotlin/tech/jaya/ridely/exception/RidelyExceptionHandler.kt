@@ -1,4 +1,4 @@
-package tech.jaya.ridely.controller
+package tech.jaya.ridely.exception
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus

@@ -1,14 +1,22 @@
 package tech.jaya.ridely.service
 
+import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Service
-import tech.jaya.ridely.controller.ActionRideRequest
-import tech.jaya.ridely.controller.DriverUnavailable
-import tech.jaya.ridely.controller.FinishRideRequest
-import tech.jaya.ridely.controller.RequestDriver
-import tech.jaya.ridely.controller.RideNotFoundException
+import tech.jaya.ridely.dto.ActionRideRequest
+import tech.jaya.ridely.exception.DriverUnavailable
+import tech.jaya.ridely.dto.FinishRideRequest
+import tech.jaya.ridely.dto.RequestDriver
+import tech.jaya.ridely.exception.RideNotFoundException
+import tech.jaya.ridely.dto.ComputeRoutesRequest
+import tech.jaya.ridely.dto.ComputeRoutesResponse
+import tech.jaya.ridely.dto.DestinationRequest
+import tech.jaya.ridely.dto.OriginRequest
+import tech.jaya.ridely.dto.RideDetailsResponse
 import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.repository.DriverRepo
 import tech.jaya.ridely.repository.RideRepo
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 @Service
 class RideService(
@@ -19,7 +27,8 @@ class RideService(
         val driver = driverRepo.findAvailableDriver().orElseThrow {
             throw DriverUnavailable("We do not have drivers available")
         }
-        val ride = req.toRide(driver)
+        val rideDetails = rideDetails(req.pickUp, req.dropOff)
+        val ride = req.toRide(driver, rideDetails)
         ride.request(driver)
         return rideRepo.save(ride)
     }
@@ -54,5 +63,57 @@ class RideService(
 
     fun delete(id: Long) {
         rideRepo.deleteById(id)
+    }
+
+    fun rideDetails(origin: String, destination: String): RideDetailsResponse {
+        var distance = 0.0
+        var estimatedTime = 0.0
+        var price = 0.0
+        runBlocking {
+            val response = computeRoutesApi(origin, destination)
+            response?.routes?.forEach { route -> {}
+                distance = route.distanceMeters.toDouble() / 1000
+                val seconds = route.duration.replace("[^0-9]".toRegex(), "")
+                estimatedTime = seconds.toDouble() / 60.0
+                price = calculatePrice(distance, estimatedTime)
+            }
+        }
+        return RideDetailsResponse(
+            convertValues(price),
+            BigDecimal(distance),
+            convertValues(estimatedTime)
+        )
+    }
+
+    private fun calculatePrice(distance: Double, estimatedTime: Double): Double {
+        val kilometerPrice = 3.00
+        val minutePrice = 2.00
+        return (distance * kilometerPrice) + (estimatedTime * minutePrice);
+    }
+
+    private fun convertValues(value: Double): BigDecimal {
+        return BigDecimal(value).setScale(2, RoundingMode.UP)
+    }
+
+    suspend fun computeRoutesApi(origin: String, destination: String): ComputeRoutesResponse? {
+        val apiKey = "AIzaSyBByp5bEonxBomXlKjN7TQSr9fOyYIIIuw"
+        val fieldMask = "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline"
+        val contentType = "application/json"
+
+        val request = ComputeRoutesRequest(
+            origin = OriginRequest(origin),
+            destination = DestinationRequest(destination),
+            travelMode = "DRIVE"
+        )
+
+        try {
+            val response = RetrofitClient.instance.computeRoutes(apiKey, fieldMask, contentType, request)
+
+            return response
+
+        } catch (e: Exception) {
+            println("Erro na requisição: ${e.message}")
+        }
+        return null
     }
 }
