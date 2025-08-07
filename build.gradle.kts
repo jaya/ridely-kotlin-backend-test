@@ -12,6 +12,7 @@ group = "tech.jaya"
 version = "0.0.1-SNAPSHOT"
 
 val flywayVersion = "10.10.0"
+val springCloudVersion = "2023.0.1"
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_21
@@ -22,26 +23,35 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	// Spring Boot
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-devtools")
+
+	// Kotlin & Jackson
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	runtimeOnly("com.h2database:h2")
 
-	// Development tools
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-
-	// Open API
+	// OpenAPI
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 
-	// Database & Migration
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.flywaydb:flyway-core:$flywayVersion")
+	// Database
 	implementation("com.mysql:mysql-connector-j:8.4.0")
-
+	implementation("org.flywaydb:flyway-core:$flywayVersion")
 	runtimeOnly("org.flywaydb:flyway-mysql:$flywayVersion")
+	runtimeOnly("com.h2database:h2")
 
+	// Feign Client
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+	}
 }
 
 tasks.withType<KotlinCompile> {
