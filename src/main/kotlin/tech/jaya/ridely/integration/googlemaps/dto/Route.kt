@@ -1,3 +1,3 @@
 package tech.jaya.ridely.integration.googlemaps.dto
 
-data class DurationDto(val value: Int)
+data class Route(val legs: List<Leg>)

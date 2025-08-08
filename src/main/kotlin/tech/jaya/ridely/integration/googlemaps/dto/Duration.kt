@@ -1,3 +1,3 @@
 package tech.jaya.ridely.integration.googlemaps.dto
 
-data class DistanceDto(val value: Int)
+data class Duration(val value: Int)

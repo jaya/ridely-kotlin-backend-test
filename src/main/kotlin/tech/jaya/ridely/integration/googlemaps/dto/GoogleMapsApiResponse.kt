@@ -1,5 +1,5 @@
 package tech.jaya.ridely.integration.googlemaps.dto
 
-data class GoogleMapsApiResponse(val routeDtos: List<RouteDto>)
+data class GoogleMapsApiResponse(val routes: List<Route>)
 
 
