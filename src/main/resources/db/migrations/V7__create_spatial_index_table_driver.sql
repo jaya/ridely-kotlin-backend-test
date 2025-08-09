@@ -1,0 +1,1 @@
+CREATE SPATIAL INDEX idx_driver_location ON driver (location);
