@@ -2,8 +2,12 @@ package tech.jaya.ridely.service
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.RequestBody
-import tech.jaya.ridely.controller.*
+import tech.jaya.ridely.controller.dto.request.ActionRideRequest
+import tech.jaya.ridely.controller.dto.request.FinishRideRequest
+import tech.jaya.ridely.controller.dto.request.RequestDriver
+import tech.jaya.ridely.controller.dto.response.*
+import tech.jaya.ridely.controller.exception.DriverUnavailable
+import tech.jaya.ridely.controller.exception.RideNotFoundException
 import tech.jaya.ridely.integration.googlemaps.GoogleMapsFeignClient
 import tech.jaya.ridely.repository.DriverRepo
 import tech.jaya.ridely.repository.RideRepo
@@ -19,7 +23,7 @@ class RideService(
 
 
     @Value("\${google.maps.api.key}")
-    private val GOOGLE_MAPS_API_KEY: String = ""
+    private val KEY: String = ""
 
     fun requestDriver(req: RequestDriver): RequestDriverResponse {
         val driver = driverRepo.findAvailableDriver().orElseThrow {
@@ -65,15 +69,15 @@ class RideService(
     fun requestRide(
         origin: String, destination: String
     ): RideResponseDto {
-        val googleMapsApiResponse = googleMapsFeignClient.getDirections(origin, destination, GOOGLE_MAPS_API_KEY)
+        val googleMapsApiResponse = googleMapsFeignClient.getDirections(origin, destination, "driving", KEY)
         val leg = googleMapsApiResponse.routes.firstOrNull()?.legs?.firstOrNull() ?: throw RuntimeException("")
         val kmDistance = (leg.distance.value / 1000.0)
-        val estimedTimeMinutes = leg.duration.value / 60.0
+        val minutes = (leg.duration.value / 60.0).toInt()
 
-        val estimedPrice = RideUtil().calculaPrice(kmDistance, estimedTimeMinutes)
+        val estimedPrice = RideUtil().calculaPrice(kmDistance, minutes)
 
         return RideResponseDto(
-            estimedTimeMinutes = String.format("%.2f", estimedTimeMinutes),
+            estimedTimeMinutes = String.format("%.2f", minutes),
             kmDistance = String.format("%.2f", kmDistance),
             estimedPrice
         )

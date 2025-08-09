@@ -10,7 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import tech.jaya.ridely.controller.RideInvalidState
+import tech.jaya.ridely.controller.exception.RideInvalidState
 import java.math.BigDecimal
 
 /**
