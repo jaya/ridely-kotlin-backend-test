@@ -1,4 +1,4 @@
-package tech.jaya.ridely.controller
+package tech.jaya.ridely.controller.exception
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -55,4 +55,18 @@ class RidelyExceptionHandler : ResponseEntityExceptionHandler() {
             request
         )!!
     }
+
+    @ExceptionHandler(DriverNotFoundException::class)
+    fun handleDriverNotFound(
+        ex: DriverNotFoundException, request: WebRequest
+    ): ResponseEntity<Any> {
+        return handleExceptionInternal(
+            ex,
+            ex.message,
+            HttpHeaders(),
+            HttpStatus.NOT_FOUND,
+            request
+        )!!
+    }
+
 }

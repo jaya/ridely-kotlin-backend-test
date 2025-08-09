@@ -2,6 +2,10 @@ package tech.jaya.ridely.controller
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import tech.jaya.ridely.controller.dto.request.ActionRideRequest
+import tech.jaya.ridely.controller.dto.request.FinishRideRequest
+import tech.jaya.ridely.controller.dto.request.RequestDriver
+import tech.jaya.ridely.controller.dto.response.*
 import tech.jaya.ridely.service.RideService
 import tech.jaya.ridely.service.dto.RideResponseDto
 

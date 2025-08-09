@@ -1,3 +1,9 @@
 package tech.jaya.ridely.controller.dto.request
 
-data class ActionRideRequest()
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class ActionRideRequest(
+    @JsonProperty(required = true)
+    val id: Long
+)
+
