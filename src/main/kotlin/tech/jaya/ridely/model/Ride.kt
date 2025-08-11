@@ -43,7 +43,7 @@ class Ride(
     var status: Status? = Status.REQUESTED,
 
     @ManyToOne
-    @JoinColumn(name = "driver_id", nullable = false)
+    @JoinColumn(name = "driver_id", nullable = true)
     var driver: Driver? = null,
 
     @Column(name = "passenger_name", nullable = false)
@@ -51,6 +51,12 @@ class Ride(
 
     @Column(name = "passenger_email", nullable = false)
     var passengerEmail: String? = null,
+
+    @Column(name = "origin_lat", nullable = false)
+    var originLat: Double? = null,
+
+    @Column(name = "origin_lon", nullable = false)
+    var originLon: Double? = null,
 
     var price: BigDecimal? = BigDecimal.ZERO,
 ) {
