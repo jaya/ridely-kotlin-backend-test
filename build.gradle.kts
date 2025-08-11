@@ -44,6 +44,10 @@ dependencies {
 	// Feign Client
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
+	implementation("org.hibernate.orm:hibernate-spatial:6.4.6.Final")
+	runtimeOnly("com.mysql:mysql-connector-j:8.4.0")
+
+
 	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
