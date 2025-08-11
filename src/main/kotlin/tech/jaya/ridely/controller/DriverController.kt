@@ -1,5 +1,6 @@
 package tech.jaya.ridely.controller
 
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import tech.jaya.ridely.controller.dto.request.DriverCreationRequest
@@ -19,6 +20,7 @@ class DriverController(
 ) {
 
     @PostMapping("/request-driver")
+    @ResponseStatus(HttpStatus.CREATED)
     fun requestDriver(@RequestBody req: RidelyPayload): RequestDriverResponse {
         return driverService.requestDriver(req)
     }

@@ -17,7 +17,9 @@ class RidelyPayload(
         dropOff = this.dropOff,
         passengerName = passenger.name,
         passengerEmail = passenger.email,
-        driver = driver
+        driver = driver,
+        originLat = 0.0,
+        originLon = 0.0
     )
 }
 

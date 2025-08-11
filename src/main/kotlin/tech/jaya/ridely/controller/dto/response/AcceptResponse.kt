@@ -1,5 +1,6 @@
 package tech.jaya.ridely.controller.dto.response
 
+import tech.jaya.ridely.model.Driver
 import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.model.Status
 

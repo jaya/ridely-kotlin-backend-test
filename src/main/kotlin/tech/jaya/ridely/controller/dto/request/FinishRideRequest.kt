@@ -5,8 +5,6 @@ import java.math.BigDecimal
 
 data class FinishRideRequest(
     @JsonProperty(required = true)
-    val id: Long,
-    @JsonProperty(required = true)
     val price: BigDecimal
 )
 

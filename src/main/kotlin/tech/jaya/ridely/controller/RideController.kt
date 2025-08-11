@@ -17,24 +17,24 @@ class RideController(
 ) {
 
 
-    @PostMapping("/refuse-ride")
-    fun refuseRide(@RequestBody req: ActionRideRequest): RefuseResponse {
-        return rideService.refuseRide(req)
+    @PatchMapping("/{id}/refuse-ride")
+    fun refuseRide(@PathVariable id: Long): RefuseResponse {
+        return rideService.refuseRide(id)
     }
 
-    @PostMapping("/cancel-ride")
-    fun deleteRide(@RequestBody req: ActionRideRequest): CancelResponse {
-        return rideService.deleteRide(req)
+    @PatchMapping("/{id}/cancel-ride")
+    fun deleteRide(@PathVariable id: Long): CancelResponse {
+        return rideService.deleteRide(id)
     }
 
-    @PostMapping("/finish-ride")
-    fun finishRide(@RequestBody req: FinishRideRequest): FinishResponse {
-        return rideService.finishRide(req)
+    @PatchMapping("/{id}/finish-ride")
+    fun finishRide(@PathVariable id: Long, @RequestBody req: FinishRideRequest): FinishResponse {
+        return rideService.finishRide(id, req)
     }
 
-    @PostMapping("/accept-ride")
-    fun acceptRide(@RequestBody req: ActionRideRequest): AcceptResponse {
-        return rideService.acceptRide(req)
+    @PatchMapping("/{id}/accept-ride")
+    fun acceptRide(@PathVariable id: Long): AcceptResponse {
+        return rideService.acceptRide(id)
     }
 
     @DeleteMapping("/{id}")
