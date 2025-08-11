@@ -1,10 +1,11 @@
 package tech.jaya.ridely.controller
 
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import tech.jaya.ridely.controller.dto.request.ActionRideRequest
 import tech.jaya.ridely.controller.dto.request.FinishRideRequest
-import tech.jaya.ridely.controller.dto.request.RequestDriver
+import tech.jaya.ridely.controller.dto.request.RidelyPayload
 import tech.jaya.ridely.controller.dto.response.*
 import tech.jaya.ridely.service.RideService
 import tech.jaya.ridely.service.dto.RideResponseDto
@@ -15,10 +16,6 @@ class RideController(
     private val rideService: RideService
 ) {
 
-    @PostMapping("/request-driver")
-    fun requestDriver(@RequestBody req: RequestDriver): RequestDriverResponse {
-        return rideService.requestDriver(req)
-    }
 
     @PostMapping("/refuse-ride")
     fun refuseRide(@RequestBody req: ActionRideRequest): RefuseResponse {
@@ -47,12 +44,11 @@ class RideController(
         }
     }
 
-    @GetMapping("/directions")
+    @PostMapping("/request-ride")
     fun requestRide(
-        @RequestParam origin: String,
-        @RequestParam destination: String
+        @Valid @RequestBody requestRide: RidelyPayload
     ): ResponseEntity<RideResponseDto> {
-        return rideService.requestRide(origin, destination).let {
+        return rideService.requestRide(requestRide).let {
             ResponseEntity.ok(it)
         }
     }
