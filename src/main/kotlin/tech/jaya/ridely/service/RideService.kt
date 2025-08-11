@@ -15,7 +15,7 @@ import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.repository.DriverRepo
 import tech.jaya.ridely.repository.RideRepo
 import tech.jaya.ridely.service.dto.RideResponseDto
-import tech.jaya.ridely.util.RideUtil
+import tech.jaya.ridely.util.RidelyUtil
 
 @Service
 class RideService(
@@ -73,7 +73,7 @@ class RideService(
 
         val ride = saveRideAndAssignNearestDriver(payload, originLatitude, originLongitude)
 
-        val estimedPrice = RideUtil().calculaPrice(kmDistance, minutes)
+        val estimedPrice = RidelyUtil().calculaPrice(kmDistance, minutes)
 
         val nearbyDrivers = nearestDriverService.top3Nearest(ride.id!!)
 
