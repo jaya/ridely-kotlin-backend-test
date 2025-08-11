@@ -1,0 +1,3 @@
+ALTER TABLE ride
+    ADD COLUMN origin_lat DECIMAL(10,8) NOT NULL,
+  ADD COLUMN origin_lon DECIMAL(11,8) NOT NULL;
