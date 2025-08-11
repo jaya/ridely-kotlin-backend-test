@@ -29,29 +29,26 @@ class RideService(
     @Value("\${google.maps.api.key}")
     private val KEY: String = ""
 
-    fun refuseRide(req: ActionRideRequest): RefuseResponse {
-        val id = req.id
+    fun refuseRide(id: Long): RefuseResponse {
         val ride = rideRepo.findById(id).orElseThrow { RideNotFoundException("No ride found with id $id") }
         ride.refuse()
         return RefuseResponse.fromRide(rideRepo.save(ride))
     }
 
-    fun deleteRide(req: ActionRideRequest): CancelResponse {
-        val id = req.id
+    fun deleteRide(id: Long): CancelResponse {
         val ride = rideRepo.findById(id).orElseThrow { RideNotFoundException("No ride found with id $id") }
         ride.cancel()
         return CancelResponse.fromRide(rideRepo.save(ride))
     }
 
-    fun finishRide(req: FinishRideRequest): FinishResponse {
-        val (id, price) = req
+    fun finishRide(id: Long, req: FinishRideRequest): FinishResponse {
+        val (price) = req
         val ride = rideRepo.findById(id).orElseThrow { RideNotFoundException("No ride found with id $id") }
         ride.complete(price)
         return FinishResponse.fromRide(rideRepo.save(ride))
     }
 
-    fun acceptRide(req: ActionRideRequest): AcceptResponse {
-        val id = req.id
+    fun acceptRide(id: Long): AcceptResponse {
         val ride = rideRepo.findById(id).orElseThrow { RideNotFoundException("No ride found with id $id") }
         ride.accept()
         return AcceptResponse.fromRide(rideRepo.save(ride))
@@ -96,7 +93,7 @@ class RideService(
         }
         rideRepo.save(ride)
 
-        ride.driver =  driverRepo.findNearestByRide(ride.id!!).first()
+        ride.driver = driverRepo.findNearestByRide(ride.id!!).first()
 
         return rideRepo.save(ride)
     }
