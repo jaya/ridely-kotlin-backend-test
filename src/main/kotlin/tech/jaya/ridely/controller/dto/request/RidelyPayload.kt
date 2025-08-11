@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import tech.jaya.ridely.model.Driver
 import tech.jaya.ridely.model.Ride
 
-class RequestDriver(
+class RidelyPayload(
     @JsonProperty(required = true)
     val passenger: PassengerRequest,
     @JsonProperty(required = true)

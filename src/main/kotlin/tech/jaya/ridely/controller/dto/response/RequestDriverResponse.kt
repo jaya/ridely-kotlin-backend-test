@@ -1,5 +1,6 @@
 package tech.jaya.ridely.controller.dto.response
 
+import tech.jaya.ridely.controller.dto.CarDto
 import tech.jaya.ridely.controller.dto.DriverDto
 import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.model.Status
@@ -19,7 +20,7 @@ class RequestDriverResponse private constructor(
             status = ride.status!!,
             driver = DriverDto(
                 name = ride.driver!!.name,
-                car = DriverDto.CarDto(
+                car = CarDto(
                     licensePlate = ride.driver!!.carLicensePlate,
                     model = ride.driver!!.carModel,
                     color = ride.driver!!.carColor
