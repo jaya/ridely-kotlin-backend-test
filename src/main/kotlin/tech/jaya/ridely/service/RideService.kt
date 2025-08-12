@@ -11,6 +11,7 @@ import tech.jaya.ridely.controller.dto.response.FinishResponse
 import tech.jaya.ridely.controller.dto.response.RefuseResponse
 import tech.jaya.ridely.controller.exception.RideNotFoundException
 import tech.jaya.ridely.integration.googlemaps.GoogleMapsFeignClient
+import tech.jaya.ridely.integration.googlemaps.dto.directions.Leg
 import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.repository.DriverRepo
 import tech.jaya.ridely.repository.RideRepo
@@ -59,9 +60,7 @@ class RideService(
     }
 
     fun requestRide(payload: RidelyPayload): RideResponseDto {
-        val googleMapsApiResponse =
-            googleMapsFeignClient.getDirections(payload.pickUp, payload.dropOff, "driving", KEY)
-        val leg = googleMapsApiResponse.routes.firstOrNull()?.legs?.firstOrNull() ?: throw RuntimeException("")
+        val leg = getDirection(payload)
         val kmDistance = (leg.distance.value / 1000.0)
         val minutes = (leg.duration.value / 60.0)
 
@@ -80,6 +79,12 @@ class RideService(
             estimedPrice = estimedPrice,
             nearbyDrivers = nearbyDrivers
         )
+    }
+
+    private fun getDirection(payload: RidelyPayload): Leg {
+        val googleMapsApiResponse =
+            googleMapsFeignClient.getDirections(payload.pickUp, payload.dropOff, "driving", KEY)
+        return googleMapsApiResponse.routes.firstOrNull()?.legs?.firstOrNull() ?: throw RuntimeException("")
     }
 
     private fun saveRideAndAssignNearestDriver(req: RidelyPayload, originLat: Double, originLon: Double): Ride {

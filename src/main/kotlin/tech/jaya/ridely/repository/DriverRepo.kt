@@ -2,41 +2,14 @@ package tech.jaya.ridely.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import tech.jaya.ridely.model.Driver
-import java.time.LocalDateTime
 import java.util.*
 
 @Repository
 interface DriverRepo : JpaRepository<Driver, Long> {
     @Query("SELECT e FROM Driver e WHERE e.available=true order by e.activationDate asc limit 1")
     fun findAvailableDriver(): Optional<Driver>
-
-//    @Query(
-//        value = """
-//              INSERT INTO driver (
-//              name, activation_date, car_license_plate, car_model, car_color, available,
-//              latitude, longitude, location_updated_at, location
-//            ) VALUES (
-//              :name, NOW(), :car_license_plate, :car_model, :car_color, :available,
-//              :latitude, :longitude, NOW(),
-//              ST_SRID(POINT(:longitude,  :latitude), 4326)
-//            )
-//""",
-//        nativeQuery = true
-//)
-//    fun createDriver(
-//        @Param("name") name: String,
-//        @Param("activation_date") activationDate: LocalDateTime,
-//        @Param("car_license_plate") carLicensePlate: String,
-//        @Param("car_model") carModel: String,
-//        @Param("car_color") carColor: String,
-//        @Param("available") available: Boolean,
-//        @Param("location_updated_at") locationUpdatedAt: LocalDateTime,
-//        @Param("latitude") latitude: Double,
-//        @Param("longitude") longitude: Double
-//    ):Driver
 
     @Query(
         value = """

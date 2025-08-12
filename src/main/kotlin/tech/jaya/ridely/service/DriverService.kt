@@ -10,7 +10,6 @@ import tech.jaya.ridely.controller.exception.DriverNotFoundException
 import tech.jaya.ridely.controller.exception.DriverUnavailable
 import tech.jaya.ridely.controller.exception.RideNotFoundException
 import tech.jaya.ridely.integration.googlemaps.GoogleMapsFeignClient
-import tech.jaya.ridely.integration.googlemaps.dto.geocode.GoogleMapsApiGeocodeResponse
 import tech.jaya.ridely.model.Driver
 import tech.jaya.ridely.repository.DriverRepo
 import tech.jaya.ridely.repository.RideRepo

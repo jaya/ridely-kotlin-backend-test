@@ -37,6 +37,7 @@ class DriverController(
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     fun save(@RequestBody driverRequest: DriverCreationRequest): ResponseEntity<DriverResponse> {
         return driverService.save(driverRequest).let {
             ResponseEntity.ok(it.toResponse())
@@ -44,6 +45,7 @@ class DriverController(
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable id: Long): ResponseEntity<Unit> {
         driverService.delete(id)
         return ResponseEntity.noContent().build()
