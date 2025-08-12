@@ -23,7 +23,7 @@ class DriverTest {
     }
 
     @Test
-    fun `when a driver is available and tries to become unavailable`() {
+    fun shouldTryToBecomeUnavailableWhenADriverIsAvailable() {
         val driver = newDriver(available = true)
 
         driver.becomeBusy()
@@ -32,7 +32,7 @@ class DriverTest {
     }
 
     @Test
-    fun `when a driver is unavailable and tries to become available`() {
+    fun shouldTryToBecomeAvailableWhenADriverIsUnavailable() {
         val driver = newDriver(available = false)
 
         driver.becomeAvailable()
@@ -41,7 +41,7 @@ class DriverTest {
     }
 
     @Test
-    fun `fillLocationFromLatLon should set POINT with lon-x and lat-y and update timestamp`() {
+    fun shouldSetPointWithLonXAndLatYAndUpdateYimestamp() {
         val driver = newDriver()
         val before = driver.locationUpdatedAt
 

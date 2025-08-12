@@ -47,13 +47,13 @@ class RideTest {
     @Test
     fun `request must associate driver and mark as REQUESTED and leave driver busy`() {
         val driver = newDriver(available = true)
-        val ride = newRide(status = Status.REFUSED, driver = null)
+        val ride = newRide(status = Status.REFUSED, driver = null) // qualquer estado não-COMPLETED permite request
 
         ride.request(driver)
 
         assertEquals(Status.REQUESTED, ride.status)
         assertSame(driver, ride.driver)
-        assertFalse(driver.available, "driver should be busy afterrequest()")
+        assertFalse(driver.available, "driver deve ficar ocupado após request()")
     }
 
     @Test
@@ -103,62 +103,62 @@ class RideTest {
     }
 
     @Test
-    fun `accept must fail if status not for REQUESTED`() {
+    fun `accept must fail if status não for REQUESTED`() {
         val ride = newRide(status = Status.CANCELLED, driver = newDriver())
         assertThrows<RideInvalidState> { ride.accept() }
     }
 
     @Test
-    fun `accept must fail if there is no driver`() {
+    fun `accept deve falhar se nao houver driver`() {
         val ride = newRide(status = Status.REQUESTED, driver = null)
         assertThrows<RideInvalidState> { ride.accept() }
     }
 
     // ---------- complete() ----------
     @Test
-    fun `complete must change to completed point and release driver`() {
-        val driver = newDriver(available = false)
+    fun `complete deve mudar para COMPLETED, setar preco e liberar driver`() {
+        val driver = newDriver(available = false) // em curso, o driver deveria estar ocupado
         val ride = newRide(status = Status.IN_PROGRESS, driver = driver)
 
         ride.complete(BigDecimal("27.90"))
 
         assertEquals(Status.COMPLETED, ride.status)
         assertEquals(BigDecimal("27.90"), ride.price)
-        assertTrue(driver.available, "driver should be available after complete()")
+        assertTrue(driver.available, "driver deve ficar disponível após complete()")
     }
 
     @Test
-    fun `complete must fail if status not for IN_PROGRESS`() {
+    fun `complete deve falhar se status nao for IN_PROGRESS`() {
         val ride = newRide(status = Status.REQUESTED, driver = newDriver(available = false))
         assertThrows<RideInvalidState> { ride.complete(BigDecimal.TEN) }
     }
 
     @Test
-    fun `complete must fail if there is no driver`() {
+    fun `complete deve falhar se nao houver driver`() {
         val ride = newRide(status = Status.IN_PROGRESS, driver = null)
         assertThrows<RideInvalidState> { ride.complete(BigDecimal.TEN) }
     }
 
     // ---------- refuse() ----------
     @Test
-    fun `refuse you must mark REFUSED and release driver`() {
-        val driver = newDriver(available = false)
+    fun `refuse deve marcar REFUSED e liberar driver`() {
+        val driver = newDriver(available = false) // estava alocado
         val ride = newRide(status = Status.REQUESTED, driver = driver)
 
         ride.refuse()
 
         assertEquals(Status.REFUSED, ride.status)
-        assertTrue(driver.available, "driver should be available after refuse()")
+        assertTrue(driver.available, "driver deve ficar disponível após refuse()")
     }
 
     @Test
-    fun `refuse must fail if running is COMPLETED`() {
+    fun `refuse deve falhar se corrida estiver COMPLETED`() {
         val ride = newRide(status = Status.COMPLETED, driver = newDriver(available = false))
         assertThrows<RideInvalidState> { ride.refuse() }
     }
 
     @Test
-    fun `refuse must fail if there is no driver`() {
+    fun `refuse deve falhar se nao houver driver`() {
         val ride = newRide(status = Status.REQUESTED, driver = null)
         assertThrows<RideInvalidState> { ride.refuse() }
     }

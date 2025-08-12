@@ -137,7 +137,7 @@ class RideControllerTest {
     }
 
     @Test
-    fun `POST - request-ride - deve retornar 200 com quote`() {
+    fun `POST - request-ride - must return 201 with response`() {
         val passenger = PassengerRequest(
             name = "Fulano",
             email = ""
@@ -148,7 +148,7 @@ class RideControllerTest {
             dropOff = "Teste"
         )
 
-        val quote = RideResponseDto(
+        val response = RideResponseDto(
             estimedTimeMinutes = 12,
             kmDistance = 3.40,
             estimedPrice = BigDecimal("27.90"),
@@ -159,7 +159,7 @@ class RideControllerTest {
             )
         )
 
-        whenever(rideService.requestRide(any())).thenReturn(quote)
+        whenever(rideService.requestRide(any())).thenReturn(response)
 
         mockMvc.perform(
             post("/rides/request-ride")
