@@ -21,8 +21,9 @@ class DriverController(
 
     @PostMapping("/request-driver")
     @ResponseStatus(HttpStatus.CREATED)
-    fun requestDriver(@RequestBody req: RidelyPayload): RequestDriverResponse {
-        return driverService.requestDriver(req)
+    fun requestDriver(@RequestBody req: RidelyPayload): ResponseEntity<RequestDriverResponse> {
+        val response = driverService.requestDriver(req)
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
     @GetMapping("/{id}")
@@ -37,10 +38,9 @@ class DriverController(
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     fun save(@RequestBody driverRequest: DriverCreationRequest): ResponseEntity<DriverResponse> {
         return driverService.save(driverRequest).let {
-            ResponseEntity.ok(it.toResponse())
+            ResponseEntity.status(HttpStatus.CREATED).body(it.toResponse())
         }
     }
 

@@ -4,7 +4,7 @@ import tech.jaya.ridely.model.Driver
 import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.model.Status
 
-class AcceptResponse private constructor(
+class AcceptResponse constructor(
     val id: Long,
     val passenger: PassengerResponse,
     val pickUp: String,

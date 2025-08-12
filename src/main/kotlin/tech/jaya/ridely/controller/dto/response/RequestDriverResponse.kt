@@ -5,7 +5,7 @@ import tech.jaya.ridely.controller.dto.DriverDto
 import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.model.Status
 
-class RequestDriverResponse private constructor(
+class RequestDriverResponse (
     val id: Long,
     val driver: DriverDto,
     val status: Status,
