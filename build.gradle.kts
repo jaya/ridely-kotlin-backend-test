@@ -50,6 +50,15 @@ dependencies {
 
 	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	// Test
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group = "org.mockito", module = "mockito-core") // evita duplicidade
+	}
+	testImplementation("org.mockito:mockito-core:5.11.0")
+	testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+
 }
 
 dependencyManagement {
