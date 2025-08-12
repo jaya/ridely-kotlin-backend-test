@@ -47,12 +47,11 @@ class RideController(
     }
 
     @PostMapping("/request-ride")
-    @ResponseStatus(HttpStatus.CREATED)
     fun requestRide(
         @Valid @RequestBody requestRide: RidelyPayload
     ): ResponseEntity<RideResponseDto> {
         return rideService.requestRide(requestRide).let {
-            ResponseEntity.ok(it)
+            ResponseEntity.status(HttpStatus.CREATED).body(it)
         }
     }
 }

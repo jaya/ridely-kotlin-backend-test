@@ -4,7 +4,7 @@ import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.model.Status
 import java.math.BigDecimal
 
-class FinishResponse private constructor(
+class FinishResponse constructor(
     val id: Long,
     val passenger: PassengerResponse,
     val dropOff: String,
