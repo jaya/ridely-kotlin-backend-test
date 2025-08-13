@@ -10,7 +10,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import tech.jaya.ridely.controller.RideInvalidState
+import tech.jaya.ridely.exception.PassengerUnavailable
+import tech.jaya.ridely.exception.RideInvalidState
 import java.math.BigDecimal
 
 /**
@@ -21,8 +22,7 @@ import java.math.BigDecimal
  * @property dropOff The drop-off address for the ride. It's a non-nullable Address object.
  * @property status The status of the ride. It's a non-nullable Status object.
  * @property driver The driver assigned to the ride. It's a nullable Driver object.
- * @property passengerName The name of the passenger requesting the ride. It's a non-nullable String.
- * @property passengerEmail The email of the passenger requesting the ride. It's a non-nullable String.
+ * @property passenger The passenger who requested the ride. It's a non-nullable Passenger object.
  * @property price The price of the ride. It's a nullable BigDecimal object.
  */
 @Entity
@@ -46,21 +46,21 @@ class Ride(
     @JoinColumn(name = "driver_id", nullable = false)
     var driver: Driver? = null,
 
-    @Column(name = "passenger_name", nullable = false)
-    var passengerName: String? = null,
-
-    @Column(name = "passenger_email", nullable = false)
-    var passengerEmail: String? = null,
+    @ManyToOne
+    @JoinColumn(name = "passenger_id", nullable = false)
+    var passenger: Passenger? = null,
 
     var price: BigDecimal? = BigDecimal.ZERO,
 ) {
-    fun request(driver: Driver) {
+    fun request(driver: Driver, passenger: Passenger) {
         if (status == Status.COMPLETED) {
             throw RideInvalidState("Ride cannot be requested because it is already completed")
         }
 
         driver.becomeBusy()
+        passenger.becomeTraveling()
         this.driver = driver
+        this.passenger = passenger
         status = Status.REQUESTED
     }
 
@@ -71,7 +71,11 @@ class Ride(
         if (driver == null) {
             throw RideInvalidState("Ride cannot be cancelled without a driver")
         }
+        if (passenger == null) {
+            throw PassengerUnavailable("Ride cannot be cancelled without a passenger")
+        }
         driver!!.becomeAvailable()
+        passenger!!.exitTravel()
         status = Status.CANCELLED
     }
 
@@ -82,7 +86,12 @@ class Ride(
         if (driver == null) {
             throw RideInvalidState("Ride cannot be accepted without a driver")
         }
+        if (passenger == null) {
+            throw PassengerUnavailable("Ride cannot be accepted without a passenger")
+        }
+
         driver!!.becomeBusy()
+        passenger!!.becomeTraveling()
         status = Status.IN_PROGRESS
     }
 
@@ -93,7 +102,11 @@ class Ride(
         if (driver == null) {
             throw RideInvalidState("Ride cannot be finished without a driver")
         }
+        if (passenger == null) {
+            throw PassengerUnavailable("Ride cannot be finished without a passenger")
+        }
         driver!!.becomeAvailable()
+        passenger!!.exitTravel()
         this.price = price
         status = Status.COMPLETED
     }
@@ -105,7 +118,12 @@ class Ride(
         if (driver == null) {
             throw RideInvalidState("Ride cannot be refused without a driver")
         }
+        if (passenger == null) {
+            throw PassengerUnavailable("Ride cannot be refused without a passenger")
+        }
+
         driver!!.becomeAvailable()
+        passenger!!.exitTravel()
         status = Status.REFUSED
     }
 }
