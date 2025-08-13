@@ -1,31 +1,24 @@
-package tech.jaya.ridely.controller
+package tech.jaya.ridely.dtos
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import tech.jaya.ridely.model.Driver
+import tech.jaya.ridely.model.Passenger
 import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.model.Status
 import java.math.BigDecimal
 
-class PassengerRequest(
-    @JsonProperty(required = true)
-    val name: String,
-    @JsonProperty(required = true)
-    val email: String
-)
-
 class RequestDriver(
-    @JsonProperty(required = true)
-    val passenger: PassengerRequest,
-    @JsonProperty(required = true)
+    @JsonProperty("passengerId", required = true)
+    val passengerId: Long,
+    @JsonProperty("pickUp", required = true)
     val pickUp: String,
-    @JsonProperty(required = true)
+    @JsonProperty("dropOff", required = true)
     val dropOff: String
 ) {
-    fun toRide(driver: Driver) = Ride(
+    fun toRide(driver: Driver, passenger: Passenger) = Ride(
         pickUp = this.pickUp,
         dropOff = this.dropOff,
-        passengerName = passenger.name,
-        passengerEmail = passenger.email,
+        passenger = passenger,
         driver = driver
     )
 }
@@ -42,10 +35,17 @@ data class ActionRideRequest(
     val id: Long
 )
 
-class PassengerResponse(
+class RequestPassengerResponse(
     val name: String,
     val email: String
-)
+) {
+    companion object {
+        fun fromPassenger(passenger: Passenger) = RequestPassengerResponse(
+            name = passenger.name,
+            email = passenger.email
+        )
+    }
+}
 
 class RequestDriverResponse private constructor(
     val id: Long,
@@ -86,7 +86,7 @@ class RequestDriverResponse private constructor(
 
 class FinishResponse private constructor(
     val id: Long,
-    val passenger: PassengerResponse,
+    val passenger: RequestPassengerResponse,
     val dropOff: String,
     val status: Status,
     val price: BigDecimal
@@ -96,7 +96,7 @@ class FinishResponse private constructor(
         fun fromRide(ride: Ride): FinishResponse {
             return FinishResponse(
                 id = ride.id!!,
-                passenger = PassengerResponse(ride.passengerName!!, ride.passengerEmail!!),
+                passenger = RequestPassengerResponse.fromPassenger(ride.passenger!!),
                 dropOff = ride.dropOff!!,
                 status = ride.status!!,
                 price = ride.price!!
@@ -107,7 +107,7 @@ class FinishResponse private constructor(
 
 class RefuseResponse private constructor(
     val id: Long,
-    val passenger: PassengerResponse,
+    val passenger: RequestPassengerResponse,
     val pickUp: String,
     val dropOff: String,
     val status: Status
@@ -115,7 +115,7 @@ class RefuseResponse private constructor(
     companion object {
         fun fromRide(ride: Ride) = RefuseResponse(
             id = ride.id!!,
-            passenger = PassengerResponse(ride.passengerName!!, ride.passengerEmail!!),
+            passenger = RequestPassengerResponse.fromPassenger(ride.passenger!!),
             pickUp = ride.pickUp!!,
             dropOff = ride.dropOff!!,
             status = ride.status!!
@@ -141,7 +141,7 @@ class CancelResponse private constructor(
 
 class AcceptResponse private constructor(
     val id: Long,
-    val passenger: PassengerResponse,
+    val passenger: RequestPassengerResponse,
     val pickUp: String,
     val dropOff: String,
     val status: Status,
@@ -149,7 +149,7 @@ class AcceptResponse private constructor(
     companion object {
         fun fromRide(ride: Ride) = AcceptResponse(
             id = ride.id!!,
-            passenger = PassengerResponse(ride.passengerName!!, ride.passengerEmail!!),
+            passenger = RequestPassengerResponse.fromPassenger(ride.passenger!!),
             pickUp = ride.pickUp!!,
             dropOff = ride.dropOff!!,
             status = ride.status!!

@@ -1,4 +1,4 @@
-package tech.jaya.ridely.controller
+package tech.jaya.ridely.exception
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -22,6 +22,34 @@ class RidelyExceptionHandler : ResponseEntityExceptionHandler() {
             ex.message,
             HttpHeaders(),
             HttpStatus.NOT_FOUND,
+            request
+        )!!
+    }
+
+    @ExceptionHandler(PassengerNotFoundException::class)
+    fun handlePassengerNotFound(
+        ex: PassengerNotFoundException, request: WebRequest
+    ): ResponseEntity<Any> {
+        return handleExceptionInternal(
+            ex,
+            ex.message,
+            HttpHeaders(),
+            HttpStatus.NOT_FOUND,
+            request
+        )!!
+    }
+
+    @ExceptionHandler(PassengerUnavailable::class)
+    fun handlePassengerUnavailable(
+        ex: PassengerUnavailable, request: WebRequest
+    ): ResponseEntity<Any> {
+        val bodyOfResponse = "Passenger unavailable: ${ex.message}"
+
+        return handleExceptionInternal(
+            ex,
+            bodyOfResponse,
+            HttpHeaders(),
+            HttpStatus.SERVICE_UNAVAILABLE,
             request
         )!!
     }
