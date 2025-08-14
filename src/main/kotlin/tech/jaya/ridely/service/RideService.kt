@@ -12,33 +12,60 @@ import tech.jaya.ridely.dtos.RefuseResponse
 import tech.jaya.ridely.dtos.RequestDriver
 import tech.jaya.ridely.dtos.RequestDriverResponse
 import tech.jaya.ridely.exception.DriverUnavailable
+import tech.jaya.ridely.exception.RideInvalidState
 import tech.jaya.ridely.exception.RideNotFoundException
 import tech.jaya.ridely.model.Passenger
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.ceil
 
 @Service
 class RideService(
     private val rideRepo: RideRepo,
     private val driverRepo: DriverRepo,
-    private val googleMapsService: GoogleMapsService
+    private val googleMapsService: GoogleMapsService,
+    private val googleGeocodingService: GoogleGeocodingService,
+    private val driverService: DriverService
 ) {
     /**
-     * Solicita um motorista disponível para uma nova corrida.
-     *
-     * @param req Dados da solicitação de corrida.
+     * Solicita o motorista disponível mais próximo para uma nova corrida.
+     * Busca informações de rota e localização, tenta encontrar o motorista mais próximo
+     * filtrando por cidade e sublocalidade (se disponíveis), ou por proximidade geográfica.
+     * Calcula preço, distância e duração, cria e salva a corrida.
+     * @param req Dados da solicitação de corrida (origem e destino).
+     * @param passenger Passageiro que está solicitando a corrida.
      * @return RequestDriverResponse com os dados da corrida criada.
-     * @throws DriverUnavailable se não houver motoristas disponíveis.
+     * @throws RideInvalidState se não for possível obter informações da rota.
+     * @throws DriverUnavailable se não houver motoristas disponíveis próximos.
      */
     fun requestDriver(req: RequestDriver, passenger: Passenger): RequestDriverResponse {
-        val driver = driverRepo.findAvailableDriver().orElseThrow {
-            DriverUnavailable("We do not have drivers available")
-        }
 
-        val (distance, duration) = googleMapsService.getRouteInfo(
+        val routeInfo = googleMapsService.getRouteInfo(
             req.pickUp,
             req.dropOff
         )
+
+        if (routeInfo.duration == 0|| routeInfo.distance == 0 || routeInfo.startLng == 0.0 || routeInfo.startLat == 0.0) {
+            throw RideInvalidState("Unable to get route information for the race")
+        }
+
+        val (distance, duration, startLat, startLng) = routeInfo
+        val locationInfo = googleGeocodingService.getLocationInfo(startLat, startLng)
+
+        val driver = if (locationInfo != null && locationInfo.city != null && locationInfo.sublocality != null) {
+            driverService.findNearestDriverByLocationInfo(
+                locationInfo.city,
+                locationInfo.sublocality,
+                startLat,
+                startLng
+            )
+        } else {
+            driverService.findNearestDriver(startLat, startLng)
+        }
+
+        if (driver == null) {
+            throw DriverUnavailable("No drivers found near the reported location")
+        }
 
         val durationInMinutes = secondsToMinutes(duration)
         val distanceInKilometers = metersToKilometers(distance)
@@ -56,7 +83,7 @@ class RideService(
      * @return Distância em quilômetros (arredondada para cima).
      */
     fun metersToKilometers(meters: Int): Int {
-        return Math.ceil(meters / 1000.0).toInt()
+        return ceil(meters / 1000.0).toInt()
     }
 
     /**
@@ -66,7 +93,7 @@ class RideService(
      * @return Duração em minutos (arredondada para cima).
      */
     fun secondsToMinutes(seconds: Int): Int {
-        return Math.ceil(seconds / 60.0).toInt()
+        return ceil(seconds / 60.0).toInt()
     }
 
     /**

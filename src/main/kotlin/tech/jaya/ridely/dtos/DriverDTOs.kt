@@ -39,6 +39,11 @@ data class DriverResponse(
     val car: CarDto
 )
 
+data class DriverLocationUpdate(
+    val latitude: Double,
+    val longitude: Double
+)
+
 fun Driver.toResponse(): DriverResponse {
     return DriverResponse(
         id = this.id!!,

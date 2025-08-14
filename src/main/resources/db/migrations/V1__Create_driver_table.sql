@@ -7,5 +7,9 @@ CREATE TABLE driver
     car_model         varchar(255) NOT NULL,
     car_color         varchar(255) NOT NULL,
     available         tinyint      NOT NULL,
+    latitude          double       NOT NULL,
+    longitude         double       NOT NULL,
+    city              varchar(255) NOT NULL,
+    sublocality       varchar(255) NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB

@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import tech.jaya.ridely.dtos.AcceptResponse
 import tech.jaya.ridely.dtos.DriverCreation
+import tech.jaya.ridely.dtos.DriverLocationUpdate
 import tech.jaya.ridely.dtos.DriverResponse
 import tech.jaya.ridely.service.DriverService
 
@@ -34,5 +35,14 @@ class DriverController(
     fun delete(@PathVariable id: Long): ResponseEntity<Unit> {
         driverService.delete(id)
         return ResponseEntity.noContent().build()
+    }
+
+    @PatchMapping("/{id}/location")
+    fun updateLocation(
+        @PathVariable id: Long,
+        @RequestBody location: DriverLocationUpdate
+    ): ResponseEntity<DriverResponse> {
+        val response = driverService.updateLocation(id, location)
+        return ResponseEntity.ok(response)
     }
 }

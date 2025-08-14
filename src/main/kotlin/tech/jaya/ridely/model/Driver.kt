@@ -44,6 +44,19 @@ class Driver(
 
     @Column(name = "car_color", nullable = false)
     var carColor: String = "",
+
+    @Column(name = "latitude", nullable = false)
+    var latitude: Double = 0.0,
+
+    @Column(name = "longitude", nullable = false)
+    var longitude: Double = 0.0,
+
+    @Column(name = "city", nullable = false)
+    var city: String = "",
+
+    @Column(name = "sublocality", nullable = false)
+    var sublocality: String = ""
+
 ) {
     fun becomeBusy() {
         this.available = false
