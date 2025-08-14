@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import tech.jaya.ridely.model.Passenger
 import tech.jaya.ridely.repository.PassengerRepo
 import tech.jaya.ridely.exception.PassengerNotFoundException
+import tech.jaya.ridely.exception.PassengerUnavailable
 
 @Service
 class PassengerService(
@@ -45,13 +46,18 @@ class PassengerService(
     }
 
     /**
-     * Busca um passageiro pelo id.
+     * Busca um passageiro pelo ID.
      * @param id Identificador do passageiro.
      * @return Passageiro encontrado.
      * @throws PassengerNotFoundException se o passageiro não for encontrado.
+     * @throws PassengerUnavailable se o passageiro já estiver em uma corrida.
      */
     fun getPassengerById(id: Long): Passenger {
-        return passengerRepository.findById(id)
+        val passenger = passengerRepository.findById(id)
             .orElseThrow { PassengerNotFoundException("Passenger not found with id $id") }
+        if (passenger.inTraveling) {
+            throw PassengerUnavailable("Passenger with id $id is already in a ride")
+        }
+        return passenger
     }
 }

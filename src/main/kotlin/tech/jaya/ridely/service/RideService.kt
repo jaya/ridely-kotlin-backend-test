@@ -49,13 +49,33 @@ class RideService(
 
     }
 
+    /**
+     * Converte uma distância em metros para quilômetros, arredondando para cima.
+     *
+     * @param meters Distância em metros.
+     * @return Distância em quilômetros (arredondada para cima).
+     */
     fun metersToKilometers(meters: Int): Int {
         return Math.ceil(meters / 1000.0).toInt()
     }
+
+    /**
+     * Converte uma duração em segundos para minutos, arredondando para cima.
+     *
+     * @param seconds Duração em segundos.
+     * @return Duração em minutos (arredondada para cima).
+     */
     fun secondsToMinutes(seconds: Int): Int {
         return Math.ceil(seconds / 60.0).toInt()
     }
 
+    /**
+     * Calcula o preço final da corrida com base na distância (km), duração (min) e taxa do app.
+     *
+     * @param distanceKm Distância em quilômetros.
+     * @param durationMin Duração em minutos.
+     * @return Valor final da corrida como BigDecimal, com duas casas decimais.
+     */
     fun calculateRidePrice(distanceKm: Int, durationMin: Int): BigDecimal {
         val basePrice = (distanceKm * 3.0) + (durationMin * 2.0)
         val appFee = basePrice * 0.01

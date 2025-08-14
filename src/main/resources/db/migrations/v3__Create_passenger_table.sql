@@ -2,6 +2,6 @@ CREATE TABLE passenger (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    available BOOLEAN NOT NULL,
+    in_Traveling BOOLEAN NOT NULL,
     activation_date TIMESTAMP NOT NULL
 );

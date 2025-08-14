@@ -21,7 +21,7 @@ class Passenger(
     @Column(name = "email", nullable = false)
     var email: String = "",
 
-    @Column(name = "available", nullable = false)
+    @Column(name = "in_Traveling", nullable = false)
     var inTraveling : Boolean = false,
 
     @Column(name = "activation_date", nullable = false)
