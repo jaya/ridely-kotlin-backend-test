@@ -14,11 +14,14 @@ import tech.jaya.ridely.dtos.RequestDriverResponse
 import tech.jaya.ridely.exception.DriverUnavailable
 import tech.jaya.ridely.exception.RideNotFoundException
 import tech.jaya.ridely.model.Passenger
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 @Service
 class RideService(
     private val rideRepo: RideRepo,
-    private val driverRepo: DriverRepo
+    private val driverRepo: DriverRepo,
+    private val googleMapsService: GoogleMapsService
 ) {
     /**
      * Solicita um motorista disponível para uma nova corrida.
@@ -31,9 +34,33 @@ class RideService(
         val driver = driverRepo.findAvailableDriver().orElseThrow {
             DriverUnavailable("We do not have drivers available")
         }
+
+        val (distance, duration) = googleMapsService.getRouteInfo(
+            req.pickUp,
+            req.dropOff
+        )
+
+        val durationInMinutes = secondsToMinutes(duration)
+        val distanceInKilometers = metersToKilometers(distance)
+        val price = calculateRidePrice(distanceInKilometers, durationInMinutes)
         val ride = req.toRide(driver, passenger)
-        ride.request(driver, passenger)
+        ride.request(driver, passenger, distanceInKilometers, durationInMinutes, price)
         return RequestDriverResponse.fromRide(rideRepo.save(ride))
+
+    }
+
+    fun metersToKilometers(meters: Int): Int {
+        return Math.ceil(meters / 1000.0).toInt()
+    }
+    fun secondsToMinutes(seconds: Int): Int {
+        return Math.ceil(seconds / 60.0).toInt()
+    }
+
+    fun calculateRidePrice(distanceKm: Int, durationMin: Int): BigDecimal {
+        val basePrice = (distanceKm * 3.0) + (durationMin * 2.0)
+        val appFee = basePrice * 0.01
+        val total = basePrice + appFee
+        return BigDecimal(total).setScale(2, RoundingMode.HALF_UP)
     }
 
     /**

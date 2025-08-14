@@ -10,6 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.springframework.data.geo.Distance
 import tech.jaya.ridely.exception.PassengerUnavailable
 import tech.jaya.ridely.exception.RideInvalidState
 import java.math.BigDecimal
@@ -35,7 +36,7 @@ class Ride(
     @Column(name = "pick_up", nullable = false)
     var pickUp: String? = null,
 
-    @JoinColumn(name = "drop_off", nullable = false)
+    @Column(name = "drop_off", nullable = false)
     var dropOff: String? = null,
 
     @Enumerated(EnumType.STRING)
@@ -50,9 +51,16 @@ class Ride(
     @JoinColumn(name = "passenger_id", nullable = false)
     var passenger: Passenger? = null,
 
+    @Column(name = "distance", nullable = false)
+    var distance: Int? = 0,
+
+    @Column(name = "duration", nullable = false)
+    var duration: Int? = 0,
+
+    @Column(name= "price", nullable = false)
     var price: BigDecimal? = BigDecimal.ZERO,
 ) {
-    fun request(driver: Driver, passenger: Passenger) {
+    fun request(driver: Driver, passenger: Passenger, distance: Int, duration: Int, price: BigDecimal) {
         if (status == Status.COMPLETED) {
             throw RideInvalidState("Ride cannot be requested because it is already completed")
         }
@@ -62,6 +70,9 @@ class Ride(
         this.driver = driver
         this.passenger = passenger
         status = Status.REQUESTED
+        this.distance = distance
+        this.duration = duration
+        this.price = price
     }
 
     fun cancel() {

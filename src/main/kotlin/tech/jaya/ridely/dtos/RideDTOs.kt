@@ -51,8 +51,11 @@ class RequestDriverResponse private constructor(
     val id: Long,
     val driver: DriverDto,
     val status: Status,
-    val dropOff: String,
     val pickUp: String,
+    val dropOff: String,
+    val distance: Int,
+    val duration: Int
+
 ) {
     data class DriverDto(
         val name: String,
@@ -71,6 +74,8 @@ class RequestDriverResponse private constructor(
             dropOff = ride.dropOff!!,
             pickUp = ride.pickUp!!,
             status = ride.status!!,
+            distance = ride.distance ?: 0,
+            duration = ride.duration ?: 0,
             driver = DriverDto(
                 name = ride.driver!!.name,
                 car = DriverDto.CarDto(
