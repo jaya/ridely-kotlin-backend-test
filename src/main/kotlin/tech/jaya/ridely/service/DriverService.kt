@@ -137,6 +137,17 @@ class DriverService(
     }
 
     /**
+     * Salva as mudanças do motorista no sistema.
+     *
+     * @param driver Dados do motorista.
+     * @return DriverResponse com os dados do motorista salvo.
+     */
+    fun saveDriver(driver: Driver): DriverResponse {
+        val saved = driverRepo.save(driver)
+        return saved.toResponse()
+    }
+
+    /**
      * Remove um motorista pelo id.
      *
      * @param id Identificador do motorista a ser removido.

@@ -1,7 +1,6 @@
 package tech.jaya.ridely.service
 
 import org.springframework.stereotype.Service
-import tech.jaya.ridely.repository.DriverRepo
 import tech.jaya.ridely.repository.RideRepo
 import tech.jaya.ridely.dtos.AcceptResponse
 import tech.jaya.ridely.dtos.ActionRideRequest
@@ -14,7 +13,6 @@ import tech.jaya.ridely.dtos.RequestDriverResponse
 import tech.jaya.ridely.exception.DriverUnavailable
 import tech.jaya.ridely.exception.RideInvalidState
 import tech.jaya.ridely.exception.RideNotFoundException
-import tech.jaya.ridely.model.Passenger
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.ceil
@@ -22,23 +20,24 @@ import kotlin.math.ceil
 @Service
 class RideService(
     private val rideRepo: RideRepo,
-    private val driverRepo: DriverRepo,
     private val googleMapsService: GoogleMapsService,
     private val googleGeocodingService: GoogleGeocodingService,
-    private val driverService: DriverService
+    private val driverService: DriverService,
+    private val passengerService: PassengerService
 ) {
     /**
      * Solicita o motorista disponível mais próximo para uma nova corrida.
-     * Busca informações de rota e localização, tenta encontrar o motorista mais próximo
+     * Obtém informações de rota e localização, tenta encontrar o motorista mais próximo
      * filtrando por cidade e sublocalidade (se disponíveis), ou por proximidade geográfica.
      * Calcula preço, distância e duração, cria e salva a corrida.
-     * @param req Dados da solicitação de corrida (origem e destino).
-     * @param passenger Passageiro que está solicitando a corrida.
-     * @return RequestDriverResponse com os dados da corrida criada.
-     * @throws RideInvalidState se não for possível obter informações da rota.
-     * @throws DriverUnavailable se não houver motoristas disponíveis próximos.
+     *
+     * @param req dados da solicitação de corrida (origem e destino)
+     * @throws RideInvalidState se não for possível obter informações da rota
+     * @throws DriverUnavailable se não houver motoristas disponíveis próximos
      */
-    fun requestDriver(req: RequestDriver, passenger: Passenger): RequestDriverResponse {
+    fun requestDriver(req: RequestDriver) {
+
+        val passenger = passengerService.getPassengerById(req.passengerId)
 
         val routeInfo = googleMapsService.getRouteInfo(
             req.pickUp,
@@ -58,7 +57,7 @@ class RideService(
                 locationInfo.sublocality,
                 startLat,
                 startLng
-            )
+            ) ?: driverService.findNearestDriver(startLat, startLng)
         } else {
             driverService.findNearestDriver(startLat, startLng)
         }
@@ -72,7 +71,9 @@ class RideService(
         val price = calculateRidePrice(distanceInKilometers, durationInMinutes)
         val ride = req.toRide(driver, passenger)
         ride.request(driver, passenger, distanceInKilometers, durationInMinutes, price)
-        return RequestDriverResponse.fromRide(rideRepo.save(ride))
+        rideRepo.save(ride)
+        driverService.saveDriver(driver)
+        passengerService.save(passenger)
 
     }
 
@@ -109,6 +110,20 @@ class RideService(
         val total = basePrice + appFee
         return BigDecimal(total).setScale(2, RoundingMode.HALF_UP)
     }
+
+    /**
+     * Busca a última corrida solicitada por um passageiro específico.
+     *
+     * @param passengerId Identificador do passageiro.
+     * @return RequestDriverResponse com os dados da última corrida solicitada pelo passageiro,
+     * ou null se não houver corridas.
+     */
+    fun findLastRideByPassengerId(passengerId: Long): RequestDriverResponse? {
+        return rideRepo.findLastRideByPassengerId(passengerId)
+            .orElse(null)
+            ?.let { RequestDriverResponse.fromRide(it) }
+    }
+
 
     /**
      * Recusa uma corrida existente.

@@ -10,21 +10,32 @@ import tech.jaya.ridely.dtos.FinishRideRequest
 import tech.jaya.ridely.dtos.RefuseResponse
 import tech.jaya.ridely.dtos.RequestDriver
 import tech.jaya.ridely.dtos.RequestDriverResponse
+import tech.jaya.ridely.exception.PassengerNotFoundException
+import tech.jaya.ridely.exception.PassengerUnavailable
 import tech.jaya.ridely.model.Passenger
 import tech.jaya.ridely.service.RideService
 import tech.jaya.ridely.service.PassengerService
+import tech.jaya.ridely.service.RideProducer
 
 @RestController
 @RequestMapping("/rides")
 class RideController(
-    private val rideService: RideService
-    , private val passengerService: PassengerService
+    private val rideService: RideService,
+    private val rideProducer: RideProducer,
+    private val passengerService: PassengerService
 ) {
 
     @PostMapping("/request-driver")
-    fun requestDriver(@RequestBody req: RequestDriver): RequestDriverResponse {
-        val passenger: Passenger = passengerService.getPassengerById(req.passengerId)
-        return rideService.requestDriver(req, passenger)
+    fun requestDriver(@RequestBody req: RequestDriver): ResponseEntity<String> {
+        return try {
+            passengerService.getPassengerById(req.passengerId)
+            rideProducer.sendRideRequest(req)
+            ResponseEntity.accepted().body("Ride request sent for processing")
+        } catch (e: PassengerNotFoundException) {
+            ResponseEntity.badRequest().body("Passenger not found")
+        } catch (e: PassengerUnavailable) {
+            ResponseEntity.badRequest().body("Passenger is already in a ride")
+        }
     }
 
     @PostMapping("/refuse-ride")
