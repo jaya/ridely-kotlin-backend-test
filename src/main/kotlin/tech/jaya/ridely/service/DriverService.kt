@@ -142,9 +142,8 @@ class DriverService(
      * @param driver Dados do motorista.
      * @return DriverResponse com os dados do motorista salvo.
      */
-    fun saveDriver(driver: Driver): DriverResponse {
-        val saved = driverRepo.save(driver)
-        return saved.toResponse()
+    fun saveDriver(driver: Driver): Driver {
+        return driverRepo.save(driver)
     }
 
     /**

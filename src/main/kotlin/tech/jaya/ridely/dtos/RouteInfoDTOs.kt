@@ -4,9 +4,7 @@ data class RouteInfo(
     val distance: Int, // metros
     val duration: Int, // segundos
     val startLat: Double,
-    val startLng: Double,
-    val endLat: Double,
-    val endLng: Double
+    val startLng: Double
 )
 
 data class LocationInfo(

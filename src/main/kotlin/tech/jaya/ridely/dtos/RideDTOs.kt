@@ -7,7 +7,7 @@ import tech.jaya.ridely.model.Ride
 import tech.jaya.ridely.model.Status
 import java.math.BigDecimal
 
-class RequestDriver(
+data class RequestDriver(
     @JsonProperty("passengerId", required = true)
     val passengerId: Long,
     @JsonProperty("pickUp", required = true)

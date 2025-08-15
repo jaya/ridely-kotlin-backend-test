@@ -37,10 +37,8 @@ class GoogleMapsService(
 
         val startLat = leg?.get("start_location")?.get("lat")?.asDouble() ?: 0.0
         val startLng = leg?.get("start_location")?.get("lng")?.asDouble() ?: 0.0
-        val endLat = leg?.get("end_location")?.get("lat")?.asDouble() ?: 0.0
-        val endLng = leg?.get("end_location")?.get("lng")?.asDouble() ?: 0.0
 
-        return RouteInfo(distance, duration, startLat, startLng, endLat, endLng)
+        return RouteInfo(distance, duration, startLat, startLng)
     }
 }
 

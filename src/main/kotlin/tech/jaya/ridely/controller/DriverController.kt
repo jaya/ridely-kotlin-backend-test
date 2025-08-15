@@ -1,5 +1,6 @@
 package tech.jaya.ridely.controller
 
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import tech.jaya.ridely.dtos.AcceptResponse
@@ -28,7 +29,7 @@ class DriverController(
     @PostMapping
     fun save(@RequestBody driverRequest: DriverCreation): ResponseEntity<DriverResponse> {
         val response = driverService.save(driverRequest)
-        return ResponseEntity.ok(response)
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
     @DeleteMapping("/{id}")

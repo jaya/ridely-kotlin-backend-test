@@ -9,10 +9,8 @@ import tech.jaya.ridely.dtos.FinishResponse
 import tech.jaya.ridely.dtos.FinishRideRequest
 import tech.jaya.ridely.dtos.RefuseResponse
 import tech.jaya.ridely.dtos.RequestDriver
-import tech.jaya.ridely.dtos.RequestDriverResponse
 import tech.jaya.ridely.exception.PassengerNotFoundException
 import tech.jaya.ridely.exception.PassengerUnavailable
-import tech.jaya.ridely.model.Passenger
 import tech.jaya.ridely.service.RideService
 import tech.jaya.ridely.service.PassengerService
 import tech.jaya.ridely.service.RideProducer
