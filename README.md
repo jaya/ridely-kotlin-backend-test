@@ -90,15 +90,20 @@ Inclua essa avaliação em um arquivo `SCALABILITY.md` explicando suas escolhas.
 
 ---
 
-## 📆 Entrega
+## 📋 Entrega
 
-1. **Fork do repositório original:** [ridely-kotlin-backend-test](https://github.com/jaya/ridely-kotlin-backend-test)
-2. **Crie uma branch com seu nome** em snake\_case (ex: `joao_silva_souza`)
-3. **Suba seu código com commits organizados**
-4. **Abra um Pull Request** para a branch `main` com:
+Para padronizar a entrega e facilitar a análise:
 
-   * Título: `Entrega - joao_silva_souza`
-   * Corpo: Nome completo, data da entrega e observações se desejar
+1. Faça um **fork deste repositório** para sua conta pessoal do GitHub.
+2. Crie uma **branch com seu nome em snake_case** (exemplo: `joao_silva_souza`).
+3. Suba sua solução utilizando **commits organizados e descritivos**.
+4. Após finalizar:
+   - Certifique-se de que o repositório esteja **público**
+   - Envie o link do seu fork para nossa equipe com:
+     - **Título:** `Entrega - joao_silva_souza`
+     - **Descrição:** Nome completo, data da entrega e quaisquer observações que julgar relevantes.
+
+> ✅ **Dica**: Você pode incluir um arquivo `THOUGHTS.md` com decisões técnicas, ideias descartadas e sugestões de melhoria.
 
 ---
 
